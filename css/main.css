@@ -3,7 +3,7 @@
 body {
   font-family: "Roboto", sans-serif;
   background-image: url("../images/background.webp");
-  background-size: 100%;
+  background-size: cover;
   background-repeat: no-repeat;
   display: grid;
   grid-template-columns: auto auto;
@@ -76,5 +76,12 @@ a:hover {
   }
   h1 {
     font-size: 40px;
+  }
+}
+
+@media (max-width: 1280px) and (min-height: 900px) {
+  body {
+    background-size: 1500px;
+    background-position: right top;
   }
 }
