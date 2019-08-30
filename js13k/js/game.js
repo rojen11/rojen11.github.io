@@ -11,7 +11,7 @@ let {
   SpriteSheet
 } = kontra;
 
-setImagePath("../assets");
+setImagePath("./assets");
 load("platform.png", "walkcycle.png").then(function() {
   let platform = Sprite({
     image: imageAssets["platform"],
