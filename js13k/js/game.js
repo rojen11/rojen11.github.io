@@ -76,7 +76,7 @@ let audiomap = setInterval(() => {
 
 
 //loading images
-setImagePath("../assets");
+setImagePath("./assets");
 load("platform.png", "walkcycle.png").then(function () {
   //Collision Check
   function collidesWith(object) {
@@ -192,7 +192,7 @@ load("platform.png", "walkcycle.png").then(function () {
           player.update();
         }
       }
-      if (keyPressed("space") && player.onGround) {
+      if ((keyPressed("w") || keyPressed("up")) && player.onGround) {
         jump.load();
         jump.play();
         player.dy -= 4.5;
@@ -208,7 +208,7 @@ load("platform.png", "walkcycle.png").then(function () {
       }
       if (headbump(player)) {
         player.onGround = false;
-        player.dy = 0;
+        player.dy = g;
         player.update();
       }
     },
