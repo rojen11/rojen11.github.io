@@ -76,7 +76,7 @@ let audiomap = setInterval(() => {
 
 
 //loading images
-setImagePath("../assets");
+setImagePath("./assets");
 load("platform.png", "walkcycle.png").then(function () {
   //Collision Check
   function collidesWith(object) {
