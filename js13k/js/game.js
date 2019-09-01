@@ -117,7 +117,36 @@ load("platform.png", "walkcycle.png").then(function () {
       y: 86,
       x: -592
     })
+
   ];
+
+  let platform2 = [
+    Sprite({
+      height: 15,
+      width: 1,
+      y: 375,
+      x: 80
+    }),
+    Sprite({
+      height: 15,
+      width: 1,
+      y: 279,
+      x: -640 + platform1[1].width
+    }),
+    Sprite({
+      height: 15,
+      width: 1,
+      y: 181,
+      x: 144
+    }),
+    Sprite({
+      height: 15,
+      width: 1,
+      y: 86,
+      x: -592 + platform1[3].width
+    })
+
+  ]
 
   //player animation
   let character = SpriteSheet({
@@ -139,7 +168,7 @@ load("platform.png", "walkcycle.png").then(function () {
   //Player
   let player = Sprite({
     x: 10,
-    y: 200,
+    y: 400,
     animations: character.animations,
     onGround: false
   });
@@ -174,13 +203,21 @@ load("platform.png", "walkcycle.png").then(function () {
     )
   }
 
+  function xplatfrom(player) {
+    return (
+      player.collidesWith(platform2[0]) || player.collidesWith(platform2[1]) || player.collidesWith(platform2[2]) || player.collidesWith(platform2[3])
+    )
+  }
+
   let g = 0.1;
 
   let loop = GameLoop({
     update: function () {
       if (keyPressed("d")) {
         if (player.x < 809) {
-          player.x += 2;
+          if (!xplatfrom(player)) {
+            player.x += 2;
+          }
           player.playAnimation("walkRight");
         }
         if (player.onGround) {
@@ -188,7 +225,9 @@ load("platform.png", "walkcycle.png").then(function () {
         }
       } else if (keyPressed("a")) {
         if (player.x > 0) {
-          player.x -= 2;
+          if (!xplatfrom(player)) {
+            player.x -= 2;
+          }
           player.playAnimation("walkLeft");
         }
         if (player.onGround) {
@@ -222,6 +261,8 @@ load("platform.png", "walkcycle.png").then(function () {
         player.dy = g;
         player.update();
       }
+
+
     },
 
     render: function () {
