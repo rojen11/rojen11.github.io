@@ -80,15 +80,7 @@ let audiomap = setInterval(() => {
 
 //loading images
 setImagePath("./assets");
-load("platform.png", "walkcycle.png").then(function () {
-  //Collision Check
-  function collidesWith(object) {
-    let dx = this.x - object.x;
-    let dy = this.y - object.y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-
-    return distance < this.radius + object.radius;
-  }
+load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function () {
 
   //Background & map
   let platform = Sprite({
@@ -122,27 +114,27 @@ load("platform.png", "walkcycle.png").then(function () {
 
   let platform2 = [
     Sprite({
-      height: 15,
+      height: 11,
       width: 1,
-      y: 375,
+      y: 378,
       x: 80
     }),
     Sprite({
-      height: 15,
+      height: 11,
       width: 1,
-      y: 279,
+      y: 282,
       x: -640 + platform1[1].width
     }),
     Sprite({
-      height: 15,
+      height: 11,
       width: 1,
-      y: 181,
+      y: 184,
       x: 144
     }),
     Sprite({
-      height: 15,
+      height: 11,
       width: 1,
-      y: 86,
+      y: 89,
       x: -592 + platform1[3].width
     })
 
@@ -161,7 +153,18 @@ load("platform.png", "walkcycle.png").then(function () {
       walkLeft: {
         frames: "8..15",
         frameRate: 14
+      },
+      shootL: {
+        frames: "17..17",
+        frameRate: 1
+
+      },
+      shootR: {
+        frames: "16..16",
+        frameRate: 1
+
       }
+
     }
   });
 
@@ -210,25 +213,37 @@ load("platform.png", "walkcycle.png").then(function () {
   }
 
   let g = 0.1;
+  let facingleft = false;
 
   let loop = GameLoop({
     update: function () {
-      if (keyPressed("d")) {
+      if (keyPressed("space")) {
+        if (facingleft) {
+          player.playAnimation("shootL");
+        } else {
+          player.playAnimation("shootR");
+        }
+        gunshot.load();
+        gunshot.play();
+      }
+      if (keyPressed("d") || keyPressed("right")) {
         if (player.x < 809) {
           if (!xplatfrom(player)) {
             player.x += 2;
           }
           player.playAnimation("walkRight");
+          facingleft = false;
         }
         if (player.onGround) {
           player.update();
         }
-      } else if (keyPressed("a")) {
+      } else if (keyPressed("a") || keyPressed("left")) {
         if (player.x > 0) {
           if (!xplatfrom(player)) {
             player.x -= 2;
           }
           player.playAnimation("walkLeft");
+          facingleft = true;
         }
         if (player.onGround) {
           player.update();
@@ -261,6 +276,7 @@ load("platform.png", "walkcycle.png").then(function () {
         player.dy = g;
         player.update();
       }
+
 
 
     },
