@@ -73,72 +73,118 @@ let audiomap = setInterval(() => {
   gunshot.src = audiosrc.gunshot;
   portal.src = audiosrc.portal;
 
+  gunshot.load();
+
   clearInterval(audiomap);
 }, 0)
 
 
+let sprites = []
 
 //loading images
 setImagePath("./assets");
-load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function () {
+load("platform.png", "walkcycle.png").then(function () {
 
   //Background & map
   let platform = Sprite({
     image: imageAssets["platform"],
-    y: 464
+    y: 464,
+    type: "platform"
   });
+  sprites.push(platform)
 
   let platform1 = [
     Sprite({
       image: imageAssets["platform"],
       y: 374,
-      x: 80
+      x: 80,
+      type: "platform"
     }),
     Sprite({
       image: imageAssets["platform"],
       y: 278,
-      x: -640
+      x: -640,
+      type: "platform"
     }),
     Sprite({
       image: imageAssets["platform"],
       y: 182,
-      x: 144
+      x: 144,
+      type: "platform"
     }),
     Sprite({
       image: imageAssets["platform"],
       y: 86,
-      x: -592
+      x: -592,
+      type: "platform"
     })
 
   ];
+
+  sprites.push(...platform1);
 
   let platform2 = [
     Sprite({
       height: 11,
       width: 1,
       y: 378,
-      x: 80
+      x: 80,
+      type: "platform"
     }),
     Sprite({
       height: 11,
       width: 1,
       y: 282,
-      x: -640 + platform1[1].width
+      x: -640 + platform1[1].width,
+      type: "platform"
     }),
     Sprite({
       height: 11,
       width: 1,
       y: 184,
-      x: 144
+      x: 144,
+      type: "platform"
     }),
     Sprite({
       height: 11,
       width: 1,
       y: 89,
-      x: -592 + platform1[3].width
+      x: -592 + platform1[3].width,
+      type: "platform"
     })
 
   ]
+
+  // portal
+  let portalIn = Sprite({
+    x: 10,
+    y: 46,
+    width: 30,
+    height: 40,
+    color: "#00264d",
+    render: function () {
+      this.draw();
+      this.context.strokeStyle = "black";
+      this.context.strokeRect(this.x, this.y, this.width, this.height);
+
+    }
+  })
+  sprites.push(portalIn);
+
+  let portalOut = Sprite({
+    x: 814,
+    y: 424,
+    width: 30,
+    height: 40,
+    color: "#00264d",
+    render: function () {
+      this.draw();
+      this.context.strokeStyle = "black";
+      this.context.strokeRect(this.x, this.y, this.width, this.height);
+
+    }
+  })
+  sprites.push(portalOut);
 
   //player animation
   let character = SpriteSheet({
@@ -173,8 +219,11 @@ load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function 
     x: 10,
     y: 400,
     animations: character.animations,
-    onGround: false
+    onGround: false,
+    type: "player",
   });
+
+  sprites.push(player);
 
   //global variables;
   let p0 = platform1[0].y + platform1[0].height;
@@ -215,16 +264,45 @@ load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function 
   let g = 0.1;
   let facingleft = false;
 
+  let shot = true;
+  let t = 0;
+
   let loop = GameLoop({
     update: function () {
-      if (keyPressed("space")) {
+      t += 1 / 60
+      if (keyPressed("space") && t > 0.25) {
+        t = 0;
+        gunshot.load();
+        gunshot.play();
+        // if (shot) {
+        //   gunshot.load();
+        // }
+        // let promise = gunshot.play();
+        // if (promise !== undefined) {
+        //   promise.then(_ => {
+        //     shot = !shot;
+        //   }).catch(e => shot = true);
+        // }
         if (facingleft) {
           player.playAnimation("shootL");
         } else {
           player.playAnimation("shootR");
         }
-        gunshot.load();
-        gunshot.play();
+
+        let bullet = Sprite({
+          type: "bullet",
+          x: facingleft ? player.x : player.x + player.width,
+          y: player.y + 10,
+          dx: facingleft ? -4 : 4,
+          width: 4,
+          height: 2,
+          ttl: 90,
+          color: "white"
+        })
+
+        sprites.push(bullet);
+        bullet.update();
+
       }
       if (keyPressed("d") || keyPressed("right")) {
         if (player.x < 809) {
@@ -238,6 +316,7 @@ load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function 
           player.update();
         }
       } else if (keyPressed("a") || keyPressed("left")) {
+
         if (player.x > 0) {
           if (!xplatfrom(player)) {
             player.x -= 2;
@@ -250,6 +329,7 @@ load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function 
         }
       }
       if ((keyPressed("w") || keyPressed("up")) && player.onGround) {
+
         jump.load();
         jump.play();
         player.dy -= 4.5;
@@ -277,14 +357,22 @@ load("platform.png", "walkcycle.png", "shootL.png", "shootR.png").then(function 
         player.update();
       }
 
+      if (player.collidesWith(portalIn)) {
+        player.x = portalOut.x,
+          player.y = portalOut.y
+      }
 
+      sprites.map(s => {
+        if (s.type == "bullet") {
+          s.update();
+        }
+      })
+      sprites = sprites.filter(sprite => sprite.isAlive());
 
     },
 
     render: function () {
-      platform.render();
-      platform1.map(p => p.render());
-      player.render();
+      sprites.map(s => s.render());
     }
   });
 
