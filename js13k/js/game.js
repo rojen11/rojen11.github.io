@@ -1,25 +1,14 @@
-
-let {
-  keyPressed,
-  Sprite,
-  load,
-  imageAssets,
-  GameLoop,
-  setImagePath,
-  loadImage,
-  SpriteSheet,
-  getCanvas, getContext, init, initKeys
-} = kontra;
-
+//initialization
+let { keyPressed, Sprite, load, imageAssets, GameLoop, setImagePath, loadImage, SpriteSheet, getCanvas, getContext, init, initKeys, initPointer, track, onPointerDown } = kontra;
 init();
 initKeys();
+initPointer();
 let { canvas, context } = init();
 canvas = getCanvas();
 context = getContext();
 
 
 //sfx and music
-
 let sfx = [
   { name: "music", songData: [{ i: [0, 255, 107, 1, 0, 255, 92, 0, 1, 32, 4, 6, 35, 0, 0, 0, 0, 0, 0, 2, 36, 0, 9, 21, 0, 5, 0, 0], p: [27, 27], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [147, , , , , , , 147, , , 147, 147, , , 147, 147, 147, , , , , 147, , 147, , , 147, 147, , , 147, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 139], f: [, , , , , , , 24, , , 24, 24, , , 24, 24, , , , , , 24, , 24, , , 24, 24, , , 24, 24, , , , , , , , 47, , , 49, 51, , , 49, 49, , , , , , 47, , 49, , , 47, 41, , , 37, 36] }] }, { i: [3, 0, 128, 0, 3, 68, 128, 0, 1, 218, 4, 4, 40, 0, 0, 1, 0, 0, 1, 2, 67, 115, 124, 190, 0, 6, 39, 1], p: [27, 27], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [, , , , 147, , , , , , , , 147, , , , , , , , 147, , , , , , , , 147], f: [] }] }, { i: [0, 91, 128, 0, 0, 95, 128, 12, 0, 0, 12, 0, 72, 0, 0, 0, 0, 0, 0, 1, 34, 0, 17, 32, 83, 3, 130, 6], p: [27, 27], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [147, 151, 154, , , , , , , , , , , , , , 146, 149, 153], f: [, , , , , 21, 21, 21, 21, 23, , , 28, , , , , , , , , , , , , , , , , , , , , , , , , 67, 46, 44, 34, 17, , , 6] }] }, { i: [0, 255, 92, 1, 0, 255, 92, 0, 1, 0, 0, 7, 101, 0, 0, 0, 0, 0, 0, 2, 255, 0, 1, 8, 83, 5, 25, 1], p: [12, 12], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [147, , , , , , , 147, , , 151, 154, , , , , 146, , , , , 146, , 149, , , 146, 153], f: [13, , , , , , , 13, , , 13, 13, 24, 24, 24, 24, 24, , , , , 13, , 13, , , 13, 13, , , , , 154, , , , , , , 92, , , 92, 89, 12, 12, 12, 9, 8, , , , , 96, , 99, , , 101, 101] }] }, { i: [0, 0, 128, 0, 0, 0, 128, 0, 0, 72, 0, 1, 56, 0, 0, 0, 0, 0, 0, 1, 193, 171, 0, 4, 39, 3, 0, 3], p: [27, 27], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [, , 147, , , , , , , , 147, , , , , , , , 147, , , , , , , , 147], f: [] }] }, { i: [1, 192, 128, 0, 1, 191, 116, 9, 0, 0, 6, 22, 34, 0, 0, 0, 0, 0, 1, 1, 0, 167, 0, 28, 77, 6, 17, 6], p: [23, 24], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [147, , , 151, , , 154, , , 149, , , 156, , 158, , 146, , , 153, , , 149, , , , 148, , 142, , 144], f: [21, , , , , , , , , , , , , , , 27, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 17] }, { n: [147, , , 151, , , 154, , , , 149, , 156, 157, 158, , 146, 149, 151, 152, 153, , , , 151, 153, 154, 156, 158], f: [] }] }, { i: [0, 31, 131, 1, 0, 83, 128, 0, 1, 210, 4, 7, 41, 0, 0, 0, 0, 0, 1, 2, 255, 0, 12, 17, 61, 5, 0, 0], p: [, 27], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 146, 139, 135], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 147, , , 147, , , 147, , , 147, , 147, 154, 144, 139, 135], f: [] }] },], rowLen: 5513, patternLen: 32, endPattern: 1, numChannels: 7 },
   { name: "portal", songData: [{ i: [0, 146, 128, 0, 0, 224, 128, 3, 0, 0, 37, 0, 81, 0, 0, 3, 0, 0, 1, 2, 124, 135, 0, 32, 0, 3, 0, 6], p: [27], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [147, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 151, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 154], f: [] }] }, { i: [0, 232, 142, 1, 0, 0, 164, 0, 1, 0, 29, 0, 57, 0, 0, 0, 0, 0, 0, 3, 85, 0, 1, 39, 76, 5, 0, 0], p: [15], c: [{ n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [], f: [] }, { n: [135], f: [] }] },], rowLen: 5513, patternLen: 32, endPattern: 0, numChannels: 2 },
@@ -53,9 +42,7 @@ function generateWave(song) {
     if (done) {
       return;
     }
-
     done = p.generate() >= 1;
-
     if (done) {
       // Put the generated song in an Audio element.
       var wave = p.createWave();
@@ -85,7 +72,6 @@ let audiomap = setInterval(() => {
   gunshot.src = audiosrc.gunshot;
   portal.src = audiosrc.portal;
 
-  gunshot.load();
 
   clearInterval(audiomap);
 }, 0)
@@ -94,8 +80,18 @@ music.volume = 0.1;
 music.loop = true;
 music.load();
 music.play();
+//end of music and sfx
 
-let sprites = []
+
+var sprites = [];
+var y = [340, 244, 148, 52];
+var level = 1;
+var score = 0;
+let g = 0.1;
+var facingleft = false;
+var t = 0;
+var jumpt = 0;
+var gameRunning = false;
 
 //loading images
 setImagePath("./assets");
@@ -107,7 +103,6 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
     y: 464,
     type: "platform"
   });
-  sprites.push(platform)
 
   let platform1 = [
     Sprite({
@@ -119,7 +114,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
     Sprite({
       image: imageAssets["platform"],
       y: 278,
-      x: -640,
+      x: -128,
       type: "platform"
     }),
     Sprite({
@@ -131,14 +126,12 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
     Sprite({
       image: imageAssets["platform"],
       y: 86,
-      x: -592,
+      x: -80,
       type: "platform"
     })
-
   ];
 
-  sprites.push(...platform1);
-
+  //fix for platform edges
   let platform2 = [
     Sprite({
       height: 11,
@@ -151,7 +144,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       height: 11,
       width: 1,
       y: 282,
-      x: -640 + platform1[1].width,
+      x: -128 + platform1[1].width,
       type: "platform"
     }),
     Sprite({
@@ -165,7 +158,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       height: 11,
       width: 1,
       y: 89,
-      x: -592 + platform1[3].width,
+      x: -80 + platform1[3].width,
       type: "platform"
     })
 
@@ -182,10 +175,8 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       this.draw();
       this.context.strokeStyle = "black";
       this.context.strokeRect(this.x, this.y, this.width, this.height);
-
     }
   })
-  sprites.push(portalIn);
 
   let portalOut = Sprite({
     x: 814,
@@ -200,8 +191,6 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
 
     }
   })
-  sprites.push(portalOut);
-
   //player animation
   let character = SpriteSheet({
     image: imageAssets["walkcycle"],
@@ -209,20 +198,20 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
     frameHeight: 31,
     animations: {
       walkRight: {
-        frames: "0..7",
+        frames: "0..2",
         frameRate: 14
       },
       walkLeft: {
-        frames: "8..15",
+        frames: "3..5",
         frameRate: 14
       },
       shootL: {
-        frames: "17..17",
+        frames: "7..7",
         frameRate: 1
 
       },
       shootR: {
-        frames: "16..16",
+        frames: "6..6",
         frameRate: 1
 
       }
@@ -239,7 +228,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
     type: "player",
   });
 
-  sprites.push(player);
+  sprites.push(platform, ...platform1, portalIn, portalOut, player);
 
   //global variables;
   let p0 = platform1[0].y + platform1[0].height;
@@ -271,14 +260,14 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
     )
   }
 
+  //small fix for edge of platform
   function xplatfrom(player) {
     return (
       player.collidesWith(platform2[0]) || player.collidesWith(platform2[1]) || player.collidesWith(platform2[2]) || player.collidesWith(platform2[3])
     )
   }
 
-  var y = [340, 244, 148, 52]
-  var level = 1;
+
 
   function addGhost() {
     let counter = 0;
@@ -288,13 +277,13 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
         let x = 10;
         switch (counter) {
           case 1:
-            x = Math.floor(Math.random() * 854) + 80;
+            x = Math.floor(Math.random() * 772) + 80;
             break;
           case 2:
             x = Math.floor(Math.random() * (platform1[1].x + platform1[1].width));
             break;
           case 3:
-            x = Math.floor(Math.random() * 854) + 144;
+            x = Math.floor(Math.random() * 706) + 144;
             break;
           case 4:
             x = Math.floor(Math.random() * (platform1[3].x + platform1[3].width));
@@ -308,6 +297,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
           y: y1,
           height: 32,
           width: 21,
+          score: 10,
           dx: (Math.random() * 5) + 1,
           image: imageAssets["ghost"]
         });
@@ -318,16 +308,10 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
 
   addGhost();
 
-  let g = 0.1;
-  let facingleft = false;
-
-  let shot = true;
-  let t = 0;
-
   let loop = GameLoop({
     update: function () {
-      t += 1 / 60
-
+      t += 1 / 60;
+      jumpt += 1 / 60;
       //keyboard input
       if (keyPressed("space") && t > 0.75) {
         t = 0;
@@ -357,7 +341,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       if (keyPressed("d") || keyPressed("right")) {
         if (player.x < 809) {
           if (!xplatfrom(player)) {
-            player.x += 2;
+            player.x += 2.5;
           }
           player.playAnimation("walkRight");
           facingleft = false;
@@ -369,7 +353,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
 
         if (player.x > 0) {
           if (!xplatfrom(player)) {
-            player.x -= 2;
+            player.x -= 2.5;
           }
           player.playAnimation("walkLeft");
           facingleft = true;
@@ -378,8 +362,8 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
           player.update();
         }
       }
-      if ((keyPressed("w") || keyPressed("up")) && player.onGround) {
-
+      if ((keyPressed("w") || keyPressed("up")) && player.onGround && jumpt > 0.25) {
+        jumpt = 0;
         jump.load();
         jump.play();
         player.dy -= 4.5;
@@ -392,7 +376,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
           if (s.y == 340) {
             if (s.x < 82) {
               s.dx = Math.abs(s.dx);
-            } else if (s.x > 845) {
+            } else if (s.x > 833) {
               s.dx = -s.dx;
             }
           } else if (s.y == 244) {
@@ -404,7 +388,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
           } else if (s.y == 148) {
             if (s.x < 144) {
               s.dx = Math.abs(s.dx);
-            } else if (s.x > 845) {
+            } else if (s.x > 833) {
               s.dx = -s.dx;
             }
           } else if (s.y == 52) {
@@ -418,6 +402,9 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
           sprites.map(sprite => {
             if (sprite.type == "bullet") {
               if (s.collidesWith(sprite)) {
+                score += s.score * level;
+                console.log(s);
+                console.log(level);
                 s.ttl = 0;
                 sprite.ttl = 0;
               }
@@ -432,12 +419,11 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       })
 
 
-
+      //player gravity and platform collision checking
       if (player.y <= 0) {
         player.dy = g;
         player.update();
       }
-
       if (collidesWithPlatForm(player)) {
         player.dy += g;
         player.onGround = false;
@@ -446,14 +432,13 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
         player.onGround = true;
         player.dy = 0;
       }
-
-
       if (headbump(player)) {
         player.onGround = false;
         player.dy = g;
         player.update();
       }
 
+      //portal
       if (player.collidesWith(portalIn)) {
         player.x = portalOut.x;
         player.y = portalOut.y;
@@ -477,17 +462,100 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       sprites.map(s => s.render());
       context.font = '20px Helvetica, Verdana, san-serif';
       context.fillStyle = '#fff';
-      context.fillText("Level: " + level, 10, 20);
+      context.textAlign = "left";
+      context.fillText("Level: " + level, 10, 25);
+      context.fillText("Score: " + score, canvas.width - 125, 25);
 
+
+
+      //player dead check
       if (player.ttl == 0) {
-
         context.font = '40px Helvetica, Verdana, san-serif';
         context.fillStyle = '#efe343';
         context.fillText("GAME OVER", canvas.width / 3, canvas.height / 2);
         loop.stop();
       }
     }
-  });
 
-  loop.start();
+  }
+  );
+
+
+
+  var onMainMenu = true;
+  let menu = Sprite({
+    mainMenu: function () {
+      context.font = '50px Helvetica, Verdana, san-serif';
+      context.strokeStyle = '#fff';
+      context.textAlign = "center";
+      context.strokeText("Play", canvas.width / 2, canvas.height / 2);
+      context.font = '30px Helvetica, Verdana, san-serif';
+      context.fillStyle = "#fff";
+      context.fillText("Controls", canvas.width / 2, canvas.height - 100);
+      context.font = '20px Helvetica, Verdana, san-serif';
+      context.fillText("Press [Space] to fire.", canvas.width / 2, canvas.height - 70);
+      context.fillText("Press [W] or [↑] to jump.", canvas.width / 2, canvas.height - 40);
+      context.fillText("Press [A] [D] or [←] [→] to move Left and Right.", canvas.width / 2, canvas.height - 10);
+      context.font = 'italic 35px Comic Sans Ms';
+      context.fillText("i", 22, canvas.height - 10);
+      context.beginPath();
+      context.arc(25, canvas.height - 22, 20, 0, 2 * Math.PI);
+      context.stroke();
+      context.font = '20px Comic Sans Ms';
+      context.fillText("Music", canvas.width - 40, canvas.height - 30);
+      context.fillText("sfx", canvas.width - 40, canvas.height - 10);
+    }
+  })
+
+  let credit = Sprite({
+    credits: function () {
+      context.font = '50px Helvetica, Verdana, san-serif';
+      context.fillStyle = "#fff";
+      context.textAlign = "center";
+      context.fillText("Credits", canvas.width / 2, 100);
+      context.font = '35px Helvetica, Verdana, san-serif';
+      context.fillText("Sfx & Music", canvas.width / 2, 175);
+      context.fillText("Sprites & Tiles", canvas.width / 2, 250);
+      context.font = '25px Helvetica, Verdana, san-serif';
+      context.fillText("Ash Blue", canvas.width / 2, 205);
+      context.fillText("Kimmo Rundelin", canvas.width / 2, 280);
+      context.fillText("thekingphoenix", canvas.width / 2, 310);
+      context.fillText("Lanea Zimmerman", canvas.width / 2, 340);
+      context.fillText("Back", 30, canvas.height - 10);
+
+    }
+  })
+
+
+  menu.mainMenu();
+  onPointerDown(function (e, object) {
+    let x = (e.layerX / e.path[0].clientWidth) * 854;
+    let y = (e.layerY / e.path[0].clientHeight) * 480;
+
+
+    if (!gameRunning && onMainMenu) {
+      if (x > 380 && x < 476 && y > 203 && y < 248) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        gameRunning = true;
+        loop.start();
+      } else if (x > 3.5 && x < 46 && y > 436 && y < 480) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        onMainMenu = false;
+        credit.credits();
+      } else if (x > 785 && x < 839 && y > 434 && y < 449) {
+        console.log("music");
+      } else if (x > 797 && x < 829 && y > 455 && y < 468) {
+        console.log("sfx");
+      }
+    } else if (!gameRunning && !onMainMenu) {
+      if (x > 3.5 && x < 56 && y > 450.5 && y < 470) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        onMainMenu = true;
+        menu.mainMenu();
+      }
+    }
+  })
+
+
+  // loop.start();
 });
