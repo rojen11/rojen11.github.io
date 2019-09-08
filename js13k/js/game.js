@@ -78,8 +78,6 @@ let audiomap = setInterval(() => {
 
 music.volume = 0.1;
 music.loop = true;
-music.load();
-music.play();
 //end of music and sfx
 
 
@@ -92,6 +90,20 @@ var facingleft = false;
 var t = 0;
 var jumpt = 0;
 var gameRunning = false;
+var sfxEnabled = true;
+var musicEnabled = true;
+var gameOverDisplay = false;
+
+function muteMusic() {
+  if (musicEnabled) {
+    music.load();
+    music.play();
+  } else {
+    music.pause();
+  }
+}
+
+muteMusic();
 
 //loading images
 setImagePath("./assets");
@@ -315,8 +327,10 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       //keyboard input
       if (keyPressed("space") && t > 0.75) {
         t = 0;
-        gunshot.load();
-        gunshot.play();
+        if (sfxEnabled) {
+          gunshot.load();
+          gunshot.play();
+        }
         if (facingleft) {
           player.playAnimation("shootL");
         } else {
@@ -364,60 +378,13 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       }
       if ((keyPressed("w") || keyPressed("up")) && player.onGround && jumpt > 0.25) {
         jumpt = 0;
-        jump.load();
-        jump.play();
+        if (sfxEnabled) {
+          jump.load();
+          jump.play();
+        }
         player.dy -= 4.5;
         player.update();
       }
-
-      //ghost events
-      sprites.map(s => {
-        if (s.type == "ghost") {
-          if (s.y == 340) {
-            if (s.x < 82) {
-              s.dx = Math.abs(s.dx);
-            } else if (s.x > 833) {
-              s.dx = -s.dx;
-            }
-          } else if (s.y == 244) {
-            if (s.x < 2) {
-              s.dx = Math.abs(s.dx);
-            } else if (s.x > (platform1[1].x + platform1[1].width - s.width)) {
-              s.dx = -s.dx;
-            }
-          } else if (s.y == 148) {
-            if (s.x < 144) {
-              s.dx = Math.abs(s.dx);
-            } else if (s.x > 833) {
-              s.dx = -s.dx;
-            }
-          } else if (s.y == 52) {
-            if (s.x < 2) {
-              s.dx = Math.abs(s.dx);
-            } else if (s.x > (platform1[3].x + platform1[3].width - s.width)) {
-              s.dx = -s.dx;
-            }
-          }
-
-          sprites.map(sprite => {
-            if (sprite.type == "bullet") {
-              if (s.collidesWith(sprite)) {
-                score += s.score * level;
-                console.log(s);
-                console.log(level);
-                s.ttl = 0;
-                sprite.ttl = 0;
-              }
-            }
-            if (sprite.type == "player") {
-              if (s.collidesWith(sprite)) {
-                player.ttl = 0;
-              }
-            }
-          })
-        }
-      })
-
 
       //player gravity and platform collision checking
       if (player.y <= 0) {
@@ -442,12 +409,61 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       if (player.collidesWith(portalIn)) {
         player.x = portalOut.x;
         player.y = portalOut.y;
-        portal.load();
-        portal.play();
+        if (sfxEnabled) {
+          portal.load();
+          portal.play();
+        }
         level++;
         addGhost();
 
       }
+
+      //ghost events
+      sprites.map(s => {
+        if (s.type == "ghost") {
+          if (s.y == 340) {
+            if (s.x < 82) {
+              s.dx = Math.abs(s.dx);
+            } else if (s.x > 833) {
+              s.dx = -Math.abs(s.dx);
+            }
+          } else if (s.y == 244) {
+            if (s.x < 2) {
+              s.dx = Math.abs(s.dx);
+            } else if (s.x > (platform1[1].x + platform1[1].width - s.width)) {
+              s.dx = -Math.abs(s.dx);
+            }
+          } else if (s.y == 148) {
+            if (s.x < 144) {
+              s.dx = Math.abs(s.dx);
+            } else if (s.x > 833) {
+              s.dx = -Math.abs(s.dx);
+            }
+          } else if (s.y == 52) {
+            if (s.x < 2) {
+              s.dx = Math.abs(s.dx);
+            } else if (s.x > (platform1[3].x + platform1[3].width - s.width)) {
+              s.dx = -Math.abs(s.dx);
+            }
+          }
+
+          sprites.map(sprite => {
+            if (sprite.type == "bullet") {
+              if (s.collidesWith(sprite)) {
+                score += s.score * level;
+                s.ttl = 0;
+                sprite.ttl = 0;
+              }
+            }
+            if (sprite.type == "player") {
+              if (s.collidesWith(sprite)) {
+                player.ttl = 0;
+              }
+            }
+          })
+        }
+      })
+
 
       sprites.map(s => {
         if (s.type == "bullet" || s.type == "ghost") {
@@ -470,9 +486,7 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
 
       //player dead check
       if (player.ttl == 0) {
-        context.font = '40px Helvetica, Verdana, san-serif';
-        context.fillStyle = '#efe343';
-        context.fillText("GAME OVER", canvas.width / 3, canvas.height / 2);
+        gameOver.display();
         loop.stop();
       }
     }
@@ -480,6 +494,18 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
   }
   );
 
+
+  let gameOver = Sprite({
+    display: function () {
+      context.font = '40px Helvetica, Verdana, san-serif';
+      context.fillStyle = '#fff';
+      context.textAlign = "center";
+      context.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+      context.font = '20px Helvetica, Verdana, san-serif';
+      context.fillText("Back To Menu", canvas.width / 2, canvas.height / 2 + 30);
+      gameOverDisplay = true;
+    }
+  })
 
 
   var onMainMenu = true;
@@ -500,10 +526,20 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
       context.fillText("i", 22, canvas.height - 10);
       context.beginPath();
       context.arc(25, canvas.height - 22, 20, 0, 2 * Math.PI);
-      context.stroke();
       context.font = '20px Comic Sans Ms';
       context.fillText("Music", canvas.width - 40, canvas.height - 30);
       context.fillText("sfx", canvas.width - 40, canvas.height - 10);
+      if (!sfxEnabled) {
+        context.moveTo(797, 465);
+        context.lineTo(829, 465);
+        context.strokeStyle = "#fff";
+      }
+      if (!musicEnabled) {
+        context.moveTo(785, 445);
+        context.lineTo(839, 445);
+        context.strokeStyle = "#fff";
+      }
+      context.stroke();
     }
   })
 
@@ -543,9 +579,14 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
         onMainMenu = false;
         credit.credits();
       } else if (x > 785 && x < 839 && y > 434 && y < 449) {
-        console.log("music");
+        musicEnabled = !musicEnabled;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        menu.mainMenu();
+        muteMusic();
       } else if (x > 797 && x < 829 && y > 455 && y < 468) {
-        console.log("sfx");
+        sfxEnabled = !sfxEnabled;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        menu.mainMenu();
       }
     } else if (!gameRunning && !onMainMenu) {
       if (x > 3.5 && x < 56 && y > 450.5 && y < 470) {
@@ -554,8 +595,15 @@ load("platform.png", "walkcycle.png", "ghost.png").then(function () {
         menu.mainMenu();
       }
     }
+
+    if (gameOverDisplay) {
+      if (x > 363 && x < 489 && y > 254 && y < 267) {
+        onMainMenu = true;
+        gameRunning = false;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        menu.mainMenu();
+        gameOverDisplay = false;
+      }
+    }
   })
-
-
-  // loop.start();
 });
