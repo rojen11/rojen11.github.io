@@ -350,7 +350,7 @@ function main() {
             type: "bullet",
             x: facingleft ? player.x : player.x + player.width,
             y: player.y + 10,
-            dx: facingleft ? -4 : 4,
+            dx: facingleft ? -6 : 6,
             width: 4,
             height: 2,
             ttl: 30,
