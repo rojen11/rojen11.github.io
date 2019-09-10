@@ -111,6 +111,7 @@ function main() {
   var facingleft = false;
   var t = 0;
   var jumpt = 0;
+  var playerIsDead = false;
 
   //loading images
   setImagePath("./assets");
@@ -331,6 +332,7 @@ function main() {
       update: function () {
         t += 1 / 60;
         jumpt += 1 / 60;
+
         //keyboard input
         if (keyPressed("space") && t > 0.75) {
           t = 0;
@@ -433,6 +435,7 @@ function main() {
 
         }
 
+
         //ghost events
         sprites.map(s => {
           if (s.type == "ghost") {
@@ -473,12 +476,12 @@ function main() {
               if (sprite.type == "player") {
                 if (s.collidesWith(sprite)) {
                   player.ttl = 0;
+                  playerIsDead = true;
                 }
               }
             })
           }
-        })
-
+        });
 
         sprites.map(s => {
           if (s.type == "bullet" || s.type == "ghost") {
@@ -486,6 +489,8 @@ function main() {
           }
         })
         sprites = sprites.filter(sprite => sprite.isAlive());
+
+
 
       },
 
@@ -503,7 +508,7 @@ function main() {
 
 
         //player dead check
-        if (player.ttl == 0) {
+        if (playerIsDead) {
           gameOver.display();
           highScore = score;
           setData();
