@@ -104,7 +104,7 @@ function muteMusic() {
 
 function main() {
   var sprites = [];
-  var y = [340, 244, 148, 52];
+  var y = [430, 340, 244, 148, 52];
   var level = 1;
   var score = 0;
   let g = 0.1;
@@ -241,7 +241,7 @@ function main() {
 
     //Player
     let player = Sprite({
-      x: 10,
+      x: portalOut.x,
       y: 400,
       animations: character.animations,
       onGround: false,
@@ -297,15 +297,18 @@ function main() {
           let x = 10;
           switch (counter) {
             case 1:
-              x = Math.floor(Math.random() * 772) + 80;
+              x = Math.floor(Math.random * 500);
               break;
             case 2:
-              x = Math.floor(Math.random() * (platform1[1].x + platform1[1].width));
+              x = Math.floor(Math.random() * 772) + 80;
               break;
             case 3:
-              x = Math.floor(Math.random() * 706) + 144;
+              x = Math.floor(Math.random() * (platform1[1].x + platform1[1].width));
               break;
             case 4:
+              x = Math.floor(Math.random() * 706) + 144;
+              break;
+            case 5:
               x = Math.floor(Math.random() * (platform1[3].x + platform1[3].width));
               break;
             default:
@@ -439,7 +442,14 @@ function main() {
         //ghost events
         sprites.map(s => {
           if (s.type == "ghost") {
-            if (s.y == 340) {
+            if (s.y == 430) {
+              if (s.x < 2) {
+                s.dx = Math.abs(s.dx);
+              } else if (s.x > 500) {
+                s.dx = -Math.abs(s.dx);
+              }
+            }
+            else if (s.y == 340) {
               if (s.x < 82) {
                 s.dx = Math.abs(s.dx);
               } else if (s.x > 833) {
