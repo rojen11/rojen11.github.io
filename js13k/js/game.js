@@ -1,11 +1,13 @@
 //initialization
-let { keyPressed, Sprite, load, imageAssets, GameLoop, setImagePath, loadImage, SpriteSheet, getCanvas, getContext, init, initKeys, initPointer, track, onPointerDown } = kontra;
+let { keyPressed, bindKeys, keyMap, Sprite, load, imageAssets, GameLoop, setImagePath, loadImage, SpriteSheet, getCanvas, getContext, init, initKeys, initPointer, track, onPointerDown } = kontra;
 init();
 initKeys();
 initPointer();
 let { canvas, context } = init();
 canvas = getCanvas();
 context = getContext();
+keyMap[16] = "shift";
+
 
 
 //sfx and music
@@ -360,7 +362,11 @@ function main() {
         if (keyPressed("d") || keyPressed("right")) {
           if (player.x < 809) {
             if (!xplatfrom(player)) {
-              player.x += 2.5;
+              if (keyPressed("shift")) {
+                player.x += 4.0;
+              } else {
+                player.x += 2.5;
+              }
             }
             player.playAnimation("walkRight");
             facingleft = false;
@@ -372,7 +378,11 @@ function main() {
 
           if (player.x > 0) {
             if (!xplatfrom(player)) {
-              player.x -= 2.5;
+              if (keyPressed("shift")) {
+                player.x -= 4.0;
+              } else {
+                player.x -= 2.5;
+              }
             }
             player.playAnimation("walkLeft");
             facingleft = true;
@@ -538,7 +548,8 @@ let gameOver = Sprite({
     context.textAlign = "center";
     context.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
     context.font = "20px Helvetica, Verdana, san-serif";
-    context.fillText("Back To Menu", canvas.width / 2, canvas.height / 2 + 30);
+    context.fillText("Replay", canvas.width / 2, canvas.height / 2 + 30);
+    context.fillText("Back To Menu", canvas.width / 2, canvas.height / 2 + 60);
     gameOverDisplay = true;
   }
 })
@@ -558,7 +569,7 @@ let menu = Sprite({
     context.font = "20px Helvetica, Verdana, san-serif";
     context.fillText("Press [Space] to fire.", canvas.width / 2, canvas.height - 70);
     context.fillText("Press [W] or [↑] to jump.", canvas.width / 2, canvas.height - 40);
-    context.fillText("Press [A] [D] or [←] [→] to move Left and Right.", canvas.width / 2, canvas.height - 10);
+    context.fillText("Press [A] [D] or [←] [→] to move Left and Right. Use [Shift] to sprint.", canvas.width / 2, canvas.height - 10);
 
     context.font = "italic 35px Comic Sans Ms";
     context.fillText("i", 22, canvas.height - 10);
@@ -653,12 +664,16 @@ onPointerDown(function (e, object) {
   }
 
   if (gameOverDisplay) {
-    if (x > 363 && x < 489 && y > 254 && y < 267) {
+    if (x > 363 && x < 489 && y > 284 && y < 297) {
       onMainMenu = true;
       gameRunning = false;
       context.clearRect(0, 0, canvas.width, canvas.height);
       menu.mainMenu();
       gameOverDisplay = false;
+    } else if (x > 396 && x < 456 && y > 253 && y < 270) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      gameRunning = true;
+      main();
     }
   }
 })
